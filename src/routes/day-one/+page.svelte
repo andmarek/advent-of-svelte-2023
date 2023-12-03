@@ -13,15 +13,19 @@
 
     let elfToAdd: string;
     let scoreToAdd: string;
-
+    $: displayElvesNames = searchInput.length > 0
+        ? elvesNames.filter(elf => elf.name.includes(searchInput))
+        : elvesNames;
+    /*
     function handleSearchElf() {
         if (searchInput.length == 0) {
             console.log("Search input is empty");
             displayElvesNames = elvesNames;
-            return;
+        } else {
+            displayElvesNames = elvesNames.filter(elf => elf.name.includes(searchInput));
         }
-        displayElvesNames = elvesNames.filter(elf => elf.name.includes(searchInput));
     }
+    */
 
     function handleAddElf() {
         console.log(elfToAdd) 
@@ -57,24 +61,28 @@
 </svelte:head>
 
 <section class="rootSection">
-    <h2> Add an Elf and Their Score!</h2>
-    <div> 
-        <input type="text" placeholder="Add an Elf Name" bind:value={elfToAdd} />
-        <input type="text" placeholder="Add Their Score" bind:value={scoreToAdd} />
+    <div class="inputSection"> 
+        <h2 class="subtitle"> Add an Elf and Their Score!</h2>
+        <input class="searchBox" type="text" placeholder="Elf Name" bind:value={elfToAdd} />
+        <input class="searchBox" type="text" placeholder="Score" bind:value={scoreToAdd} />
         <button on:click={handleAddElf}> Add </button>
     </div>
 
     <div class="inputSection"> 
-        <input type="text" on:input={handleSearchElf} placeholder="Filter by name" bind:value={searchInput} />
+        <h2 class="subtitle"> Filter By Name </h2>
+        <input type="text" placeholder="Filter by name" bind:value={searchInput} />
     </div>
 
     <!-- https://advent.sveltesociety.dev/data/2023/day-one.json -->
     {#if elvesNames}
         <h1 class="displayTitle">Present Tally</h1>
         <ul class="elvesNamesList">
-            {#each displayElvesNames as elfName}
-                <li class="elfNameItem">{elfName.name}: {elfName.tally}</li>
-            {/each}
+            {#key displayElvesNames}
+                {#each displayElvesNames as elfName}
+                    <li class="elfNameItem">{elfName.name}: {elfName.tally}</li>
+                {/each}   
+            {/key}
+            
         </ul>
     {:else}
         <h1>Loading...</h1>
@@ -91,7 +99,7 @@
         background-color: #161A30;
     }
     .displayTitle {
-        color: #F0ECE5;
+        color: #B6BBC4;
     }
     .elvesNamesList {
         display: flex;
@@ -116,9 +124,28 @@
         transition:
             background-color 0.5s;
     }
+
+    .subtitle {
+        color: #B6BBC4
+    }
+
     .elfNameItem:hover {
         background-color: #31304D;
     }
     
+    .searchBox {
+        padding: 10px 15px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        resize: vertical;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
 
+    .inputSection {
+        text-align: center;
+    }
 </style>
